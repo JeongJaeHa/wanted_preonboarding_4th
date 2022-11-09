@@ -14,7 +14,7 @@ export class UsersController {
   }
 
   @Post('/signin')
-  signin(@Body(ValidationPipe) signinUserDto: userSigninValidator) {
+  signin(@Body(ValidationPipe) signinUserDto: userSigninValidator): Promise<{message: string, statusCode: string, accessToken: string}> {
     return this.usersService.signin(signinUserDto)
   }
 }
