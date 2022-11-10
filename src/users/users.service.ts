@@ -62,6 +62,7 @@ export class UsersService {
     if(seller){
       throw new BadRequestException('already seller')
     }
+
     const sellerInfo = new this.sellerModel(
       {
         _id: uuid(),
