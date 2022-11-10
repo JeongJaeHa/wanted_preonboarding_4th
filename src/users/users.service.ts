@@ -6,12 +6,14 @@ import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
-
+import { setgroups } from 'process';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(Users.name) 
+    @InjectModel(Users.name)
     private readonly userModel: Model<userDocument>,
+    @InjectModel(Users.name)
+    private readonly sellerModel: Model<Sellers>,
     private jwtService: JwtService
 ) {}
   async signup(createUserDto: userSignupValidator): Promise<Users> {
@@ -19,12 +21,14 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const userCountry = country.toUpperCase();
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = this.userModel.findOne({ email: email });
+    const user = await this.userModel.findOne({ email: email });
+  
     if(user) {
       throw new BadRequestException("this email already signup");
     }
     const createUser  = new this.userModel(
       {
+        _id: uuid(),
         email: email,
         password: hashedPassword,
         phone: phone,
@@ -58,7 +62,8 @@ export class UsersService {
     if(seller){
       throw new BadRequestException('already seller')
     }
-    const sellerInfo = new this.userModel(
+
+    const sellerInfo = new this.sellerModel(
       {
         _id: uuid(),
         email: user.email,
