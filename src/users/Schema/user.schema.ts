@@ -3,6 +3,7 @@ import { IsEmail } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 
 export type userDocument = HydratedDocument<Users>;
+export type marketDocument = HydratedDocument<Sellers>;
 @Schema()
 export class Users {
     @Prop()
@@ -30,5 +31,30 @@ export class Users {
     @Prop()
     created: Date;
 }
+@Schema()
+export class Sellers {
 
+    @Prop()
+    _id?: string;
+
+    @Prop()
+    email?: string;
+
+    @Prop()
+    bank: string;
+
+    @Prop()
+    phone?: string;
+
+    @Prop()
+    name: string;
+
+    @Prop()
+    account: string;
+
+    @Prop()
+    another_phone?: string;
+}
+
+export const sellersSchema = SchemaFactory.createForClass(Sellers)
 export const usersSchema = SchemaFactory.createForClass(Users);

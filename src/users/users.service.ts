@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { userSigninValidator, userSignupValidator } from './dto/create-user.dto';
-import { userDocument, Users } from './Schema/user.schema';
+import { Sellers, userDocument, Users } from './Schema/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
-import { UsersModule } from './users.module';
+import { v4 as uuid } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class UsersService {
     if(user) {
       throw new BadRequestException("this email already signup");
     }
-    const createUser  = await this.userModel.create(
+    const createUser  = new this.userModel(
       {
         email: email,
         password: hashedPassword,
@@ -33,7 +33,7 @@ export class UsersService {
         created: Date.now()
       }
     )
-    // createUser.save();
+    createUser.save();
     return Object.assign({"message": "signup success", "statusCode": 201})
   }
 
@@ -50,5 +50,26 @@ export class UsersService {
     } else {
       throw new UnauthorizedException('login fail check email and password');
     }
+  }
+
+  async createSeller(user: Users, createMarketDto: Sellers): Promise<{message: string, statusCode: number}> {
+    const { bank, account, name } = createMarketDto;
+    const seller = await this.userModel.findOne({email: user.email})
+    if(seller){
+      throw new BadRequestException('already seller')
+    }
+    const sellerInfo = new this.userModel(
+      {
+        _id: uuid(),
+        email: user.email,
+        name: name,
+        phone: user.phone,
+        bank: bank,
+        account: account,
+      }
+    )
+
+    sellerInfo.save()
+    return Object.assign({"message": "seller register success", "statusCode":201})
   }
 }
