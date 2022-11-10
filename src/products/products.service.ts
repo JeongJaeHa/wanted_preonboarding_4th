@@ -58,17 +58,18 @@ export class ProductsService {
 
   async updateProduct(id: string, updateProductDto: UpdateProductDto, user: Users) {
     const { title, content, price, description } = updateProductDto
-    try{
-      await this.productModel.findByIdAndUpdate(id, {
+      const update = await this.productModel.findByIdAndUpdate(id, {
         title: title,
         content: content,
         price: price,
         description: description,
         updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
       })
-    } catch(err) {
-      throw new UnauthorizedException('update only register seller')
+      
+    if(!update) {
+      throw new UnauthorizedException('incorrect product id')
     }
+    return Object.assign({"message": "update success", statusCode: 200})
 
   }
 
