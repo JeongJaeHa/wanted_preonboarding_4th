@@ -1,17 +1,19 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { userSigninValidator, userSignupValidator } from './dto/create-user.dto';
-import { userDocument, Users } from './Schema/user.schema';
+import { Sellers, userDocument, Users } from './Schema/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
-import { UsersModule } from './users.module';
+import { v4 as uuid } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
-
+import { setgroups } from 'process';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(Users.name) 
+    @InjectModel(Users.name)
     private readonly userModel: Model<userDocument>,
+    @InjectModel(Users.name)
+    private readonly sellerModel: Model<Sellers>,
     private jwtService: JwtService
 ) {}
   async signup(createUserDto: userSignupValidator): Promise<Users> {
@@ -19,12 +21,14 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const userCountry = country.toUpperCase();
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = this.userModel.findOne({ email: email });
+    const user = await this.userModel.findOne({ email: email });
+  
     if(user) {
       throw new BadRequestException("this email already signup");
     }
-    const createUser  = await this.userModel.create(
+    const createUser  = new this.userModel(
       {
+        _id: uuid(),
         email: email,
         password: hashedPassword,
         phone: phone,
@@ -33,7 +37,7 @@ export class UsersService {
         created: Date.now()
       }
     )
-    // createUser.save();
+    createUser.save();
     return Object.assign({"message": "signup success", "statusCode": 201})
   }
 
@@ -50,5 +54,26 @@ export class UsersService {
     } else {
       throw new UnauthorizedException('login fail check email and password');
     }
+  }
+
+  async createSeller(user: Users, createMarketDto: Sellers): Promise<{message: string, statusCode: number}> {
+    const { bank, account, name } = createMarketDto;
+    const seller = await this.userModel.findOne({email: user.email})
+    if(seller){
+      throw new BadRequestException('already seller')
+    }
+    const sellerInfo = new this.sellerModel(
+      {
+        _id: uuid(),
+        email: user.email,
+        name: name,
+        phone: user.phone,
+        bank: bank,
+        account: account,
+      }
+    )
+
+    sellerInfo.save()
+    return Object.assign({"message": "seller register success", "statusCode":201})
   }
 }

@@ -45,3 +45,13 @@ export class userSigninValidator {
     })
     password: string;
 }
+export class createSellerDto {
+    @IsNotEmpty()
+    bank: string;
+
+    @IsNotEmpty()
+    account: string;
+
+    @IsNotEmpty()
+    name: string;
+}
