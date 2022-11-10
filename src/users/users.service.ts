@@ -23,7 +23,7 @@ export class UsersService {
     if(user) {
       throw new BadRequestException("this email already signup");
     }
-    const createUser  = await this.userModel.create(
+    const createUser  = new this.userModel(
       {
         email: email,
         password: hashedPassword,
@@ -33,7 +33,7 @@ export class UsersService {
         created: Date.now()
       }
     )
-    // createUser.save();
+    createUser.save();
     return Object.assign({"message": "signup success", "statusCode": 201})
   }
 

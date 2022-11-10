@@ -28,7 +28,6 @@ export class UsersController {
     @getUser() user: Users,
     @Body() sellerInfo: createSellerDto
     ): Promise<{message: string, statusCode: number}> {
-    console.log(user)
     return this.usersService.createSeller(user, sellerInfo);
   }
 }
