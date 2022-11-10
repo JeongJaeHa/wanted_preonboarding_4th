@@ -13,7 +13,7 @@ export class ProductsController {
 
   @Post('/register')
   @UseGuards(AuthGuard())
-  // @UsePipes(categoryValidationPipe)
+  @HttpCode(201)
   create(
     @getUser() user: Users,
     @Body(ValidationPipe) createProductDto: CreateProductDto):Promise<{message: string, statusCode: number}> {
@@ -34,11 +34,12 @@ export class ProductsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard())
+  @HttpCode(200)
   updateProduct(
     @getUser() user: Users,
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto
-  ) {
+  ): Promise<{message: string, statusCode: number}> {
     return this.productsService.updateProduct(id, updateProductDto, user);
   }
 

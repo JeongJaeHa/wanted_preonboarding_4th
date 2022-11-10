@@ -3,7 +3,7 @@ import { IsEmail } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 
 export type userDocument = HydratedDocument<Users>;
-
+export type sellerDocument = HydratedDocument<Sellers>;
 @Schema()
 export class Users {
     @Prop()

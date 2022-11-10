@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Users, usersSchema } from './Schema/user.schema';
+import { Sellers, sellersSchema, Users, usersSchema } from './Schema/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { jwtStrategy } from './jwt.strategy';
@@ -19,6 +19,7 @@ import { Products, productsSchema } from 'src/products/Schemas/product.schema';
     PassportModule.register({ defaultStrategy: 'jwt'}),
     MongooseModule.forFeature([{ name: Users.name, schema: usersSchema }]),
     MongooseModule.forFeature([{ name: Products.name, schema: productsSchema }]),
+    MongooseModule.forFeature([{ name: Sellers.name, schema: sellersSchema }]),
   ],
   controllers: [UsersController],
   providers: [UsersService, jwtStrategy],
