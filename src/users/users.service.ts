@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { userSigninValidator, userSignupValidator } from './dto/create-user.dto';
-import { Sellers, userDocument, Users } from './Schema/user.schema';
+import { sellerDocument, Sellers, userDocument, Users } from './Schema/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
@@ -12,8 +12,8 @@ export class UsersService {
   constructor(
     @InjectModel(Users.name)
     private readonly userModel: Model<userDocument>,
-    @InjectModel(Users.name)
-    private readonly sellerModel: Model<Sellers>,
+    @InjectModel(Sellers.name)
+    private readonly sellerModel: Model<sellerDocument>,
     private jwtService: JwtService
 ) {}
   async signup(createUserDto: userSignupValidator): Promise<Users> {
@@ -58,7 +58,8 @@ export class UsersService {
 
   async createSeller(user: Users, createMarketDto: Sellers): Promise<{message: string, statusCode: number}> {
     const { bank, account, name } = createMarketDto;
-    const seller = await this.userModel.findOne({email: user.email})
+    const seller = await this.sellerModel.findOne({email: user.email})
+    console.log(seller)
     if(seller){
       throw new BadRequestException('already seller')
     }
