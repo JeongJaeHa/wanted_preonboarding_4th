@@ -22,6 +22,9 @@ $ npm run start
 $ npm run start:dev
 ```
 
+# API Documentation
+[API Documentation](https://documenter.getpostman.com/view/22378810/2s8YeoNtC2)
+
 # 요구사항
 ## Database - mongoDB
 
@@ -53,6 +56,7 @@ TypeORM 사용금지
 - email, password, phone을 입력하여 전송합니다.<br/>
 - 입력값에대한 유효성검사 진행 후 결과에 따른 응답메세지를 보냅니다.<br/>
 <br/>
+
 ## 셀러의 입점정보 등록
 - 로그인한 유저의 Jwt와 은행, 계좌, 예금주를 작성하여 전송합니다.<br/>
 - Seller목록에 사용자가 있는지 유효성 검사를 진행하고, 결과에 따른 응답메세지를 보냅니다.<br/>
